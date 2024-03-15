@@ -1,0 +1,64 @@
+   ,feature                           ,coef
+57 ,state_construction_GOOD           ,9468092065386084.0
+62 ,state_construction_nan            ,8638591783054442.0
+60 ,state_construction_TO_RENOVATE    ,6718812288765122.0
+56 ,state_construction_AS_NEW         ,6701916181574768.0
+59 ,state_construction_TO_BE_DONE_UP  ,5573306403771966.0
+58 ,state_construction_JUST_RENOVATED ,3510170784759530.0
+61 ,state_construction_TO_RESTORE     ,1669098047391898.0
+12 ,area_total                        ,39410.72205737233
+ 0 ,living_area                       ,38793.75832389535
+ 7 ,kitchen                           ,15696.971713154373
+ 2 ,bathrooms                         ,11147.639516110372
+ 1 ,bedrooms                          ,7197.193197566696
+ 3 ,livingroom_surface                ,4277.33678661293
+ 8 ,has_terrace                       ,-119.71252600997104
+ 4 ,kitchen_surface                   ,-1833.0228583521603
+ 6 ,has_garden                        ,-4097.423773623894
+11 ,epc                               ,-5110.570959273726
+ 9 ,has_attic                         ,-8030.393841230543
+ 5 ,facades                           ,-15516.457685496527
+10 ,has_basement                      ,-16826.303423498757
+43 ,district_Philippeville            ,-2.586515946931695e+16
+54 ,district_Virton                   ,-2.666942525105067e+16
+17 ,district_Bastogne                 ,-2.6866652020559996e+16
+29 ,district_Ieper                    ,-3.088178977688953e+16
+15 ,district_Arlon                    ,-3.138853894195955e+16
+34 ,district_Marche-en-Famenne        ,-3.2700372833992276e+16
+53 ,district_Veurne                   ,-3.2860555137592412e+16
+39 ,district_Neufchâteau              ,-3.472327197745872e+16
+22 ,district_Diksmuide                ,-3.5763523319700776e+16
+37 ,district_Mouscron                 ,-3.6055016420514696e+16
+24 ,district_Eeklo                    ,-3.733747306678941e+16
+55 ,district_Waremme                  ,-3.761628093029914e+16
+28 ,district_Huy                      ,-3.816752348243865e+16
+23 ,district_Dinant                   ,-3.871057040192223e+16
+19 ,district_Brussels                 ,-3.89791277446474e+16
+16 ,district_Ath                      ,-4.029382611330065e+16
+47 ,district_Thuin                    ,-4.02938261133063e+16
+33 ,district_Maaseik                  ,-4.04228301452523e+16
+49 ,district_Tongeren                 ,-4.1314012583017064e+16
+48 ,district_Tielt                    ,-4.291745949225329e+16
+41 ,district_Oostend                  ,-4.480789676614573e+16
+52 ,district_Verviers                 ,-4.5038287285551864e+16
+50 ,district_Tournai                  ,-4.781869307970917e+16
+46 ,district_Soignies                 ,-4.8566757274180936e+16
+44 ,district_Roeselare                ,-4.951072940570853e+16
+18 ,district_Brugge                   ,-5.368022548957599e+16
+38 ,district_Namur                    ,-5.508640094323198e+16
+42 ,district_Oudenaarde               ,-5.527093003284154e+16
+36 ,district_Mons                     ,-5.672342724109896e+16
+45 ,district_Sint-Niklaas             ,-5.813595409148098e+16
+21 ,district_Dendermonde              ,-6.0520071291444984e+16
+35 ,district_Mechelen                 ,-6.710779394122532e+16
+20 ,district_Charleroi                ,-6.864255543099924e+16
+27 ,district_Hasselt                  ,-6.907381185081262e+16
+40 ,district_Nivelles                 ,-7.1253653113261144e+16
+30 ,district_Kortrijk                 ,-7.402143523417776e+16
+25 ,district_Gent                     ,-7.792422099954758e+16
+13 ,district_Aalst                    ,-8.029975591302446e+16
+31 ,district_Leuven                   ,-8.218605784485573e+16
+32 ,district_Liège                    ,-8.390666791679814e+16
+51 ,district_Turnhout                 ,-8.541803407870653e+16
+26 ,district_Halle-Vilvoorde          ,-9.10954460334462e+16
+14 ,district_Antwerp                  ,-9.124801815791749e+16
