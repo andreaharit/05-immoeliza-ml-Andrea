@@ -6,17 +6,31 @@ import pandas as pd
 import numpy as np
 
 
-from sklearn.metrics import r2_score, root_mean_squared_error, mean_squared_error, mean_absolute_error, mean_absolute_percentage_error, median_absolute_error, PredictionErrorDisplay
-from sklearn.linear_model import LinearRegression
-
-
 class Preprocessing:
+    """
+    Class handles all the preprocessing regarding the data:
+        -Dropping columns to fine tune a model
+        -Splitting data
+        -One hot encoding
+        -Scaling
+    Args: 
+        file(str): CSV to be read with pre-cleanned data
+        drop(list): list of columns to be dropped for a particular model.
+        cat(list): list of not dropped columns that are categorical and will be encoded
+    Attributes:
+        self.X = pos-dropping, pre-splitting feature columns with data
+        self.y = pre-split target column with data
+        self.X_train = X train set pos-processing
+        self.X_test = X test set pos-processing
+        self.y_test = y_test pos-processing
+        self.y_train = y_train pos-processint
+        self.columns = list with columns names of X_train pos-processing
+    """
     def __init__(self, file, drop, cat) -> None:
         # Load clean CSV
         df = pd.read_csv(file)
-        # Experimental column dropping
-        # Construction year hurt the model by 2%, lots of missing data, maybe badly inputed
-        # and likely covered by state_construction, size, epc already
+
+        # Dropping columns that hurt the specific model
         columns_drop = drop
         categorical = cat
 
@@ -29,7 +43,6 @@ class Preprocessing:
 
         # One hot encoding
         # For training set
-
         enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False).set_output(transform="pandas")
         enctransform_train = enc.fit_transform(X_train[categorical])
         X_train = pd.concat([X_train, enctransform_train], axis = 1).drop(categorical, axis = 1)
@@ -43,7 +56,7 @@ class Preprocessing:
         columns = X_train.columns
 
         # Inputting
-        # Replace NAN in kitchen and living room by multiplying living area for a %
+        # Replace NAN in kitchen and living room by multiplying living area for a average %
         percent_k = X_train["kitchen_surface"].sum()/X_train["living_area"].sum() 
         percent_l = X_train["livingroom_surface"].sum()/X_train["living_area"].sum() 
         X_train['livingroom_surface'] = X_train['livingroom_surface'].fillna(round(X_train["living_area"]*percent_l,0))
@@ -60,7 +73,7 @@ class Preprocessing:
         X_train = scaler.fit_transform(X_train)
         X_test = scaler.transform(X_test)
 
-        # Class objects
+        # Create class attributes
         self.X = X
         self.y = y
         self.X_train = X_train
@@ -68,28 +81,3 @@ class Preprocessing:
         self.y_test = y_test
         self.y_train = y_train
         self.columns = columns
-
-
-file = "./data/cleaned_houses.csv"
-columns_drop = ["construction_year"]
-categorical = ["district", "state_construction"]
-
-prepro = Preprocessing(file = file, drop = columns_drop, cat=categorical)
-regressor = LinearRegression()
-regressor.fit(prepro.X_train,prepro.y_train)
-
-
-# Make predictions using the testing set
-y_pred = regressor.predict(prepro.X_test)
-y_pred_train = regressor.predict(prepro.X_train)
-
-#DATA
-print(f"mean {pd.Series(prepro.y).mean()}")
-print(f"var {"{:e}".format(pd.Series(prepro.y).var())}")
-print(f"std {pd.Series(prepro.y).std()}")
-print()
-
-#R2
-print(f"R2 train: {r2_score(prepro.y_train, y_pred_train)}")
-print(f"R2 test: {r2_score(prepro.y_test, y_pred)}")
-print()
