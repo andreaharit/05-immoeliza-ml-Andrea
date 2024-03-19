@@ -167,7 +167,7 @@ def main():
     coef_matrix(df, columns_coef )
 
     # save to csv
-    df.to_csv("./data/cleaned_houses.csv", index=False)
+    df.to_csv(".data/cleaned_houses.csv", index=False)
 
 
 if __name__ == "__main__":

@@ -17,16 +17,18 @@ class Linear_reg:
 
         self.coef = regressor.coef_
         self.intercept = regressor.intercept_
-        self.r2_train = r2_score(y_train, y_pred_train)
-        self.r2_test = r2_score(y_test, y_pred)
+
+
+        self.r2_train = round(r2_score(y_train, y_pred_train),5)
+        self.r2_test = round(r2_score(y_test, y_pred),5)
 
         #RMSE
-        self.rmse_train = root_mean_squared_error(y_train, y_pred_train)
-        self.rmse_test = root_mean_squared_error(y_test, y_pred)
+        self.rmse_train = round(root_mean_squared_error(y_train, y_pred_train),2)
+        self.rmse_test = round(root_mean_squared_error(y_test, y_pred),2)
 
         #MAE (mean absolute error) 
-        self.mae_train = mean_absolute_error(y_train, y_pred_train)
-        self.mae_test = mean_absolute_error(y_test, y_pred)
+        self.mae_train = round(mean_absolute_error(y_train, y_pred_train),2)
+        self.mae_test = round(mean_absolute_error(y_test, y_pred),2)
 
 class Poly_reg:
     def __init__(self, X_train, X_test, y_train, y_test) -> None:        
@@ -48,35 +50,37 @@ class Poly_reg:
 
         self.coef = polyreg["lr"].coef_
         self.intercept = polyreg["lr"].intercept_
-        self.r2_train = r2_score(y_train, y_pred_train)
-        self.r2_test = r2_score(y_test, y_pred)
+
+
+        self.r2_train = round(r2_score(y_train, y_pred_train),5)
+        self.r2_test = round(r2_score(y_test, y_pred),5)
 
         #RMSE
-        self.rmse_train = root_mean_squared_error(y_train, y_pred_train)
-        self.rmse_test = root_mean_squared_error(y_test, y_pred)
+        self.rmse_train = round(root_mean_squared_error(y_train, y_pred_train),2)
+        self.rmse_test = round(root_mean_squared_error(y_test, y_pred),2)
 
         #MAE (mean absolute error) 
-        self.mae_train = mean_absolute_error(y_train, y_pred_train)
-        self.mae_test = mean_absolute_error(y_test, y_pred)
+        self.mae_train = round(mean_absolute_error(y_train, y_pred_train),2)
+        self.mae_test = round(mean_absolute_error(y_test, y_pred),2)
 
 class Random_forest_reg:
     def __init__(self, X_train, X_test, y_train, y_test) -> None:
-        n = 100
-        j = 4
+        trees = 70
+        leaves = 2
 
-        treeregressor = RandomForestRegressor(n_estimators = n, min_samples_leaf= j)
+        treeregressor = RandomForestRegressor(n_estimators = trees, min_samples_leaf= leaves)
         treeregressor.fit(X_train,y_train)
         y_pred= treeregressor.predict(X_test)
         y_pred_train= treeregressor.predict(X_train)
 
 
-        self.r2_train = r2_score(y_train, y_pred_train)
-        self.r2_test = r2_score(y_test, y_pred)
+        self.r2_train = round(r2_score(y_train, y_pred_train),5)
+        self.r2_test = round(r2_score(y_test, y_pred),5)
 
         #RMSE
-        self.rmse_train = root_mean_squared_error(y_train, y_pred_train)
-        self.rmse_test = root_mean_squared_error(y_test, y_pred)
+        self.rmse_train = round(root_mean_squared_error(y_train, y_pred_train),2)
+        self.rmse_test = round(root_mean_squared_error(y_test, y_pred),2)
 
         #MAE (mean absolute error) 
-        self.mae_train = mean_absolute_error(y_train, y_pred_train)
-        self.mae_test = mean_absolute_error(y_test, y_pred)
+        self.mae_train = round(mean_absolute_error(y_train, y_pred_train),2)
+        self.mae_test = round(mean_absolute_error(y_test, y_pred),2)

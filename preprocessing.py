@@ -57,15 +57,19 @@ class Preprocessing:
 
         # Inputting
         # Replace NAN in kitchen and living room by multiplying living area for a average %
-        percent_k = X_train["kitchen_surface"].sum()/X_train["living_area"].sum() 
-        percent_l = X_train["livingroom_surface"].sum()/X_train["living_area"].sum() 
-        X_train['livingroom_surface'] = X_train['livingroom_surface'].fillna(round(X_train["living_area"]*percent_l,0))
-        X_train['kitchen_surface'] = X_train['kitchen_surface'].fillna(round(X_train["living_area"]*percent_k,0))
+        try:
+            percent_k = X_train["kitchen_surface"].sum()/X_train["living_area"].sum() 
+            percent_l = X_train["livingroom_surface"].sum()/X_train["living_area"].sum() 
+            X_train['livingroom_surface'] = X_train['livingroom_surface'].fillna(round(X_train["living_area"]*percent_l,0))
+            X_train['kitchen_surface'] = X_train['kitchen_surface'].fillna(round(X_train["living_area"]*percent_k,0))
+        except KeyError as e:
+            pass
 
         # KNN imputation
-        imputer = KNNImputer(missing_values = np.nan, n_neighbors=5, weights = "distance")
+        k = 71
+        imputer = KNNImputer(missing_values = np.nan, n_neighbors=k, weights = "distance")
         X_train = imputer.fit_transform(X_train)
-        imputer = KNNImputer(n_neighbors=5)
+        imputer = KNNImputer(n_neighbors=k)
         X_test = imputer.fit_transform(X_test)
 
         # Scale the features using StandardScaler
@@ -81,3 +85,4 @@ class Preprocessing:
         self.y_test = y_test
         self.y_train = y_train
         self.columns = columns
+        print(y.shape)

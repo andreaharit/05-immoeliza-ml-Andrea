@@ -6,8 +6,8 @@ from models import Linear_reg, Poly_reg, Random_forest_reg
 def main():
 
     file = "./data/cleaned_houses.csv"
-    columns_drop = ["construction_year", "state_construction"]
-    categorical = ["district"]   
+    columns_drop = ["construction_year"]
+    categorical = ["district", "state_construction"]   
 
     prepro = Preprocessing(file = file, drop = columns_drop, cat=categorical)
     y = prepro.y
@@ -23,11 +23,17 @@ def main():
     forest_metrics = ["random_forest", rd_forest.r2_train, rd_forest.r2_test, rd_forest.rmse_train, rd_forest.rmse_test, rd_forest.mae_train, rd_forest.mae_test]
 
     columns = ["regression", "r2_train", "r2_test", "rmse_train", "rmse_test", "mae_train", "mae_test"]
-    data = [linear_metrics, poly_metrics, forest_metrics]
+    data = [linear_metrics, poly_metrics, forest_metrics]   
+    
+    
+    print(f"mean {round(pd.Series(y).mean(),2)}")
+    print(f"var {"{:0.2e}".format(pd.Series(y).var())}")
+    print(f"std {round(pd.Series(y).std(),2)}")
 
-    
-    
     df_metrics = pd.DataFrame(data, columns = columns)
+
+
+        
 
     print(df_metrics)
 
