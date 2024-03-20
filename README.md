@@ -27,31 +27,35 @@ And now, we are building and evaluating machine learning regression models for p
 The final processed dataset contains 18529 properties, which were scrapped and treated on February 2024.
 
 The target variable is:
-- 'price': price of the house in euros.
+- *price* (numerical): price of the house in euros.
 
 The features used on the final comparison between different models are:
 
-- 'district' (categorical): Belgian province where a house is located.
-- 'area_total' (numerical): total area of the lot in sqm.
-- 'epc' (categorical, converted to numeric): Energy Performance Certificate of the house (A to G, where A is the best grade). 
-- 'state_construction' (categorical): classification if the building needs or not improvments (GOOD, AS_NEW, TO_RENOVATE, TO_BE_DONE_UP, JUST_RENOVATED, TO_RESTORE).
-- 'living_area'(numerical): total living area in sqm.
-- 'livingroom_surface' (numerical): livingroom area in sqm. 
-- 'kitchen_surface' (numerical): kitchen area in sqm.
-- 'bedrooms' (numerical): number of bedrooms available.
-- 'bathrooms' (numerical): number of bedrooms available.
-- 'facades' (numerical): exposed facades of the house (1 to 4).
-- 'has_garden (numerical)': boolean 0 (doesn't have) or 1 (have one).
-- 'kitchen' (numerical, boolean): 0 (no equipped kitchen) or 1 (some level of equipped kitchen).
-- 'has_terrace'(numerical, boolean): 0 (doesn't have) or 1 (have).
-- 'has_attic'(numerical, boolean): 0 (doesn't have) or 1 (have).
-- 'has_basement' (numerical, boolean): 0 (doesn't have) or 1 (have).
+- *district* (categorical): Belgian province where a house is located.
+- *area_total* (numerical): total area of the lot in sqm.
+- *epc* (categorical, converted to numeric): Energy Performance Certificate of the house (A to G, where A is the best grade). 
+- *state_construction* (categorical): classification if the building needs or not improvments (GOOD, AS_NEW, TO_RENOVATE, TO_BE_DONE_UP, JUST_RENOVATED, TO_RESTORE).
+- *living_area* (numerical): total living area in sqm.
+- *livingroom_surface* (numerical): livingroom area in sqm. 
+- *kitchen_surface* (numerical): kitchen area in sqm.
+- *bedrooms* (numerical): number of bedrooms available.
+- *bathrooms* (numerical): number of bedrooms available.
+- *facades* (numerical): exposed facades of the house (1 to 4).
+- *has_garden* (boolean): boolean 0 (doesn't have) or 1 (have one).
+- *kitchen* (boolean): 0 (no equipped kitchen) or 1 (some level of equipped kitchen).
+- *has_terrace* (boolean): 0 (doesn't have) or 1 (have).
+- *has_attic* (boolean): 0 (doesn't have) or 1 (have).
+- *has_basement* (boolean): 0 (doesn't have) or 1 (have).
 
 ## Prepossessing details 🧹
 
+Model evaluation was done via randomly sampling 20% of the data for test, and 80% for training.
+
 Inputing was done in "livingroom_surface", "kitchen_surface" by applying an average % of their size relative to the living area.
+
 For missing values in "epc", "facades", it was used k nearest neighbors. For "state_construction", the most frequent value.
-For categorical ('district', 'state_construction') data that was not straighforth to rank without introducing bias, it was appliyed one hot encoding.
+
+For categorical ('district', 'state_construction') data that was not straighforth to rank without introducing bias, it was then appliyed one hot encoding.
 
 
 ## Models details 🤖
@@ -60,10 +64,11 @@ A linear, polynomial and random forest regression were tested.
 At the end, the polynomial regression required to drop an extra column ("state_construction"), for it to have meanigfull metrics.
 But by dropping such a column, other models were hurt. This is note of further investigation.
 
-
 ## Performance 🎯
 
-Model evaluation was done via randomly sampling 20% of the data for test, and 80% for training.
+
+
+
 
 
 
@@ -74,7 +79,7 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 
 
 ## File structure 🗂️
-
+├── img
 ├── data
 │   ├── scapegoats.csv
 │   └── scapegoats.csv
@@ -84,6 +89,7 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 ├── main.py
 └── MODELSCARD.md
 
+- img folder contains images for README and therefore was not detailed above.
 - scapegoats.csv is the raw data set pre-cleaning
 - cleaned_houses.csv is the post-cleaning csv file
 - cleaning.py is the python file that uses scapegoats.csv and outputs cleaned_houses.csv
