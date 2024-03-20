@@ -48,7 +48,7 @@ The features available in the cleaned dataset were:
 - *has_attic* (boolean): 0 (doesn't have) or 1 (have).
 - *has_basement* (boolean): 0 (doesn't have) or 1 (have).
 
-## Prepossessing details 🧹
+## Prepocessing details 🧹
 
 ### Splitting
 
@@ -82,6 +82,10 @@ For each set of columns that was dropped we can see the following metrics:
 ![Year construction and state of construction is dropped](img/drop_constr_year_state_const.png)
 
 In conclusion, the random tree regressor was the best scoring model by dropping only the "construction_year" column.
+|   R2 |	RMSE (€) | MAE (€)|
+| ----- | ------- | ---------- |
+| 0.695 | 80150.5 | 59687.4 |
+
 
 ## Limitations 🚧
 
@@ -97,7 +101,7 @@ Therefore other types of properties as apartments, or subtypes as chalets, farmh
     │   └── cleaned_houses.csv
     ├── models_pickle
     ├── cleaning.py
-    ├── preprocessing.py
+    ├── prepocessing.py
     ├── models.py
     ├── main.py
     ├── requirements.txt
@@ -109,7 +113,7 @@ Therefore other types of properties as apartments, or subtypes as chalets, farmh
 - cleaned_houses.csv is the post-cleaning csv file
 
 - cleaning.py is the python file that uses scapegoats.csv and outputs cleaned_houses.csv
-- preprossessing.py is the python file for preprocessing the data (inputting, encoding, scaling)
+- preprocessing.py is the python file for preprocessing the data (inputting, encoding, scaling)
 - models.py is the python file containing classes for each model and a class for metrics
 - main.py is the python file that runs the preprocess and models classes and prints the metrics for each model.
 
