@@ -95,6 +95,7 @@ Therefore other types of properties as apartments, or subtypes as chalets, farmh
     ├── data
     │   ├── scapegoats.csv
     │   └── cleaned_houses.csv
+    ├── models_pickle
     ├── cleaning.py
     ├── preprocessing.py
     ├── models.py
@@ -103,12 +104,16 @@ Therefore other types of properties as apartments, or subtypes as chalets, farmh
     └── MODELSCARD.md
 
 - img folder contains images for README and therefore was not detailed above.
+
 - scapegoats.csv is the raw data set pre-cleaning
 - cleaned_houses.csv is the post-cleaning csv file
+
 - cleaning.py is the python file that uses scapegoats.csv and outputs cleaned_houses.csv
 - preprossessing.py is the python file for preprocessing the data (inputting, encoding, scaling)
 - models.py is the python file containing classes for each model and a class for metrics
 - main.py is the python file that runs the preprocess and models classes and prints the metrics for each model.
+
+All the processed models were stored as a pickle file in the models_pickle folder. Since we tested two different sets of columns to be dropped, we will have a model type 0 (drops only year or construction) and models type 1 (drops year of construciton and state of construction).
 
 ## Usage 🛠️
 
