@@ -130,3 +130,4 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 ## Timeline 📅
 
 This project took 5 days to be completed.
+
