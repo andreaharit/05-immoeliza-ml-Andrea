@@ -1,18 +1,28 @@
-# Model card
+# Belgian house market ML models 📈
 
-## Project context
+## Project context 📝
 
 This is the third part of a project that aims to create a machine learning model to predict the selling price of houses in Belgium.
 
 Previous stages were:
 
-- Scrapping Immoweb to gather the raw data. See repository (insert link)
-- Analysing the data for insights. See repository (insert link)
+- Scrapping [Immoweb](https://www.immoweb.be/). See [repository](https://github.com/niels-demeyer/immo-eliza-scraping-scrapegoat).
+- Analysing the data for insights. See [repository](https://github.com/Yanina-Andriienko/immo-eliza-scrapeGOATS-analysis).
 
-And now, here, we are building and evaluating machine learning regression models for price prediction.
+And now, we are building and evaluating machine learning regression models for price prediction.
 
+## Table of Contents
 
-## Data
+- [Data 📚](#Data-📚)
+- [Prepossessing details 🧹](#Prepossessing-details-🧹)
+- [Models details 🤖](#Models-details-🤖)
+- [Performance 🎯](#Performance-🎯)
+- [Limitations 🚧](#Limitations-🚧)
+- [File structure 🗂️](#Limitations-🚧)
+- [Usage 🛠️](#Limitations-🚧)
+- [Timeline 📅](#timeline-📅)
+
+## Data 📚
 
 The final processed dataset contains 18529 properties, which were scrapped and treated on February 2024.
 
@@ -37,37 +47,57 @@ The features used on the final comparison between different models are:
 - 'has_attic'(numerical, boolean): 0 (doesn't have) or 1 (have).
 - 'has_basement' (numerical, boolean): 0 (doesn't have) or 1 (have).
 
-## Prepossessing details
+## Prepossessing details 🧹
 
-Inputing was done in "livingroom_surface", "kitchen_surface" by applying an average % over the living area.
-For missing values in "epc", "facades", "state_construction", it was used k nearest neighbors.
-For categorical ('district', 'state_construction') data that was not straighforth to rank without introducing bias, it was applyed one hot encoding.
+Inputing was done in "livingroom_surface", "kitchen_surface" by applying an average % of their size relative to the living area.
+For missing values in "epc", "facades", it was used k nearest neighbors. For "state_construction", the most frequent value.
+For categorical ('district', 'state_construction') data that was not straighforth to rank without introducing bias, it was appliyed one hot encoding.
 
 
-## Models details
+## Models details 🤖
 
 A linear, polynomial and random forest regression were tested.
 At the end, the polynomial regression required to drop an extra column ("state_construction"), for it to have meanigfull metrics.
 But by dropping such a column, other models were hurt. This is note of further investigation.
 
 
-## Performance
+## Performance 🎯
 
 Model evaluation was done via randomly sampling 20% of the data for test, and 80% for training.
 
 
-PUT THE METRICS WITH AND WITHOUT THE STATE OF CONSTRUCTION
 
-## Limitations
 
-TALK ABOUT HOW THE MODEL IS WEIRD WITH COLUM SELECTION, HOW RANDOM TREE IS TOUCHY FEELY.
+## Limitations 🚧
 
-## Usage
+The model is only fitted for houses in belgium according to the subcategorization followed by Immoweb. Therefore other types of properties as appartments, or subtypes as chalets, farmhouses etc. were not considered for this model.
 
-What are the dependencies, what scripts are there to train the model, how to generate predictions, ...
 
-## Maintainers
+## File structure 🗂️
 
-Who to contact in case of questions or issues?
+├── data
+│   ├── scapegoats.csv
+│   └── scapegoats.csv
+├── cleaning.py
+├── preprocessing.py
+├── models.py
+├── main.py
+└── MODELSCARD.md
 
-## File structure
+- scapegoats.csv is the raw data set pre-cleaning
+- cleaned_houses.csv is the post-cleaning csv file
+- cleaning.py is the python file that uses scapegoats.csv and outputs cleaned_houses.csv
+- preprossessing.py is the python file for preprocessing the data (inputting, encoding, scaling)
+- models.py is the python file containing classes for each model and a class for metrics
+- main.py is the python file that runs the preprocess and models classes and prints the metrics for each model.
+
+
+## Usage 🛠️
+
+
+
+
+## Timeline 📅
+
+This project took 5 days to be completed.
+

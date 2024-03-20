@@ -2,6 +2,8 @@
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import KNNImputer
+from sklearn.impute import SimpleImputer
+
 import pandas as pd
 import numpy as np
 
@@ -36,10 +38,32 @@ class Preprocessing:
 
         df.drop(columns = columns_drop, inplace= True)
 
-        # Split in training set and test set
+        
+
+        # Split in feature/target and training set/test set
         X = df.drop(columns=["price"])
         y = df['price']
         X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42, test_size=0.2)
+
+
+        # Inputting
+        try:
+            # Replace NAN in kitchen and living room by multiplying living area for a average %
+
+            percent_k = X_train["kitchen_surface"].sum()/X_train["living_area"].sum() 
+            percent_l = X_train["livingroom_surface"].sum()/X_train["living_area"].sum() 
+            X_train['livingroom_surface'] = X_train['livingroom_surface'].fillna(round(X_train["living_area"]*percent_l,0))
+            X_train['kitchen_surface'] = X_train['kitchen_surface'].fillna(round(X_train["living_area"]*percent_k,0))
+
+            # Replace NAN in "state_construction" with the most freq value (probably GOOD)
+            X_train["state_construction"] = X_train["state_construction"].fillna(X_train['state_construction'].value_counts().index[0])
+            X_test["state_construction"] = X_test["state_construction"].fillna(X_test['state_construction'].value_counts().index[0])
+
+        except KeyError as e:
+            pass
+        
+
+
 
         # One hot encoding
         # For training set
@@ -52,20 +76,12 @@ class Preprocessing:
         enctransform_test = enc2.fit_transform(X_test[categorical])
         X_test = pd.concat([X_test, enctransform_test], axis = 1).drop(categorical, axis = 1)
 
-        # Colecting colum names for printing later coefitients
+        # Colecting colum names for printing later coeficients if necessary
         columns = X_train.columns
 
-        # Inputting
-        # Replace NAN in kitchen and living room by multiplying living area for a average %
-        try:
-            percent_k = X_train["kitchen_surface"].sum()/X_train["living_area"].sum() 
-            percent_l = X_train["livingroom_surface"].sum()/X_train["living_area"].sum() 
-            X_train['livingroom_surface'] = X_train['livingroom_surface'].fillna(round(X_train["living_area"]*percent_l,0))
-            X_train['kitchen_surface'] = X_train['kitchen_surface'].fillna(round(X_train["living_area"]*percent_k,0))
-        except KeyError as e:
-            pass
 
-        # KNN imputation
+
+        # KNN imputation, must be done after one-hot encoding otherwise it doesnt recognize strings
         k = 71
         imputer = KNNImputer(missing_values = np.nan, n_neighbors=k, weights = "distance")
         X_train = imputer.fit_transform(X_train)
@@ -85,4 +101,4 @@ class Preprocessing:
         self.y_test = y_test
         self.y_train = y_train
         self.columns = columns
-        print(y.shape)
+        print(f"Data set contains {X.shape[0]} data points and {X.shape[1]} features.")
