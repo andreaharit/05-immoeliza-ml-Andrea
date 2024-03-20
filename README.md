@@ -1,4 +1,4 @@
-# Belgian house market ML models 📈
+# Belgian house market, ML models 📈
 
 ## Project context 📝
 
@@ -6,10 +6,10 @@ This is the third part of a project that aims to create a machine learning model
 
 Previous stages were:
 
-- Scrapping [Immoweb](https://www.immoweb.be/). See [repository](https://github.com/niels-demeyer/immo-eliza-scraping-scrapegoat).
-- Analysing the data for insights. See [repository](https://github.com/Yanina-Andriienko/immo-eliza-scrapeGOATS-analysis).
+- Scrapping the data from the real state website [Immoweb](https://www.immoweb.be/). See [repository](https://github.com/niels-demeyer/immo-eliza-scraping-scrapegoat).
+- Analysing the data for business insights. See [repository](https://github.com/Yanina-Andriienko/immo-eliza-scrapeGOATS-analysis).
 
-And now, we are building and evaluating machine learning regression models for price prediction.
+And now we are building and evaluating machine learning regression models for price prediction.
 
 ## Table of Contents
 
@@ -24,19 +24,20 @@ And now, we are building and evaluating machine learning regression models for p
 
 ## Data 📚
 
-The final processed dataset contains 18529 properties, which were scrapped and treated on February 2024.
+The final processed dataset contains 18529 properties, which were scrapped and treated in February 2024.
 
 The target variable is:
 - *price* (numerical): price of the house in euros.
 
-The features used on the final comparison between different models are:
+The features available in the cleaned dataset were:
 
 - *district* (categorical): Belgian province where a house is located.
 - *area_total* (numerical): total area of the lot in sqm.
-- *epc* (categorical, converted to numeric): Energy Performance Certificate of the house (A to G, where A is the best grade). 
-- *state_construction* (categorical): classification if the building needs or not improvments (GOOD, AS_NEW, TO_RENOVATE, TO_BE_DONE_UP, JUST_RENOVATED, TO_RESTORE).
+- *epc* (categorical, converted to numeric): Energy Performance Certificate of the house (A to G, where A is best). 
+- *state_construction* (categorical): classification if the building needs or not improvements (GOOD, AS_NEW, TO_RENOVATE, TO_BE_DONE_UP, JUST_RENOVATED, TO_RESTORE).
+- *construction_year* (numerical): year a house was built.
 - *living_area* (numerical): total living area in sqm.
-- *livingroom_surface* (numerical): livingroom area in sqm. 
+- *livingroom_surface* (numerical): living room area in sqm. 
 - *kitchen_surface* (numerical): kitchen area in sqm.
 - *bedrooms* (numerical): number of bedrooms available.
 - *bathrooms* (numerical): number of bedrooms available.
@@ -49,36 +50,43 @@ The features used on the final comparison between different models are:
 
 ## Prepossessing details 🧹
 
+### Splitting
+
 Model evaluation was done via randomly sampling 20% of the data for test, and 80% for training.
 
-Inputing was done in "livingroom_surface", "kitchen_surface" by applying an average % of their size relative to the living area.
+### Inputting
 
-For missing values in "epc", "facades", it was used k nearest neighbors. For "state_construction", the most frequent value.
+Inputting was done in "livingroom_surface", "kitchen_surface" by applying an average % of their size relative to the living area.
 
-For categorical ('district', 'state_construction') data that was not straighforth to rank without introducing bias, it was then appliyed one hot encoding.
+For missing values in "epc", "facades", it was used k nearest neighbors. 
+
+For "state_construction", the most frequent value.
+
+### Encoding
+
+For categorical ('district', 'state_construction') data that was not straighforth to rank without introducing bias, it was then applied one hot encoding.
 
 
 ## Models details 🤖
 
 A linear, polynomial and random forest regression were tested.
-At the end, the polynomial regression required to drop an extra column ("state_construction"), for it to have meanigfull metrics.
-But by dropping such a column, other models were hurt. This is note of further investigation.
+At the end, the polynomial regression required to drop an extra column ("state_construction") for it to have meaningful metrics.
+But by dropping such a column, other models were hurt. This is worth further investigation.
 
 ## Performance 🎯
 
-For each set of columns that where dropped we can see the following metrics:
+For each set of columns that was dropped we can see the following metrics:
+
 ![Year construction is dropped](img/drop_constr_year.png)
 
 ![Year construction and state of construction is dropped](img/drop_constr_year_state_const.png)
 
-
-
-
-
+In conclusion, the random tree regressor was the best scoring model by dropping only the "construction_year" column.
 
 ## Limitations 🚧
 
-The model is only fitted for houses in belgium according to the subcategorization followed by Immoweb. Therefore other types of properties as appartments, or subtypes as chalets, farmhouses etc. were not considered for this model.
+The model is only fitted for houses in Belgium according to Immoweb's subcategorization. 
+Therefore other types of properties as apartments, or subtypes as chalets, farmhouses etc. were not considered for this model.
 
 
 ## File structure 🗂️
@@ -86,7 +94,7 @@ The model is only fitted for houses in belgium according to the subcategorizatio
     ├── img
     ├── data
     │   ├── scapegoats.csv
-    │   └── scapegoats.csv
+    │   └── cleaned_houses.csv
     ├── cleaning.py
     ├── preprocessing.py
     ├── models.py
@@ -102,9 +110,7 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 - models.py is the python file containing classes for each model and a class for metrics
 - main.py is the python file that runs the preprocess and models classes and prints the metrics for each model.
 
-
 ## Usage 🛠️
-
 
 **Clone the repository using `git` command:**
 
@@ -118,7 +124,9 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 
     pip3 install -r requirements.txt
 
-**Regenerate if necessary the cleaned_houses.csv dataset**
+**Regenerate, if necessary, the cleaned_houses.csv dataset**
+
+This will overwrite the current csv file on the data folder.
 
     python3 cleaning.py
 
