@@ -66,7 +66,10 @@ But by dropping such a column, other models were hurt. This is note of further i
 
 ## Performance 🎯
 
+For each set of columns that where dropped we can see the following metrics:
+![Year construction is dropped](img/drop_constr_year.png)
 
+![Year construction and state of construction is dropped](img/drop_constr_year_state_const.png)
 
 
 
@@ -79,15 +82,17 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 
 
 ## File structure 🗂️
-├── img
-├── data
-│   ├── scapegoats.csv
-│   └── scapegoats.csv
-├── cleaning.py
-├── preprocessing.py
-├── models.py
-├── main.py
-└── MODELSCARD.md
+
+    ├── img
+    ├── data
+    │   ├── scapegoats.csv
+    │   └── scapegoats.csv
+    ├── cleaning.py
+    ├── preprocessing.py
+    ├── models.py
+    ├── main.py
+    ├── requirements.txt
+    └── MODELSCARD.md
 
 - img folder contains images for README and therefore was not detailed above.
 - scapegoats.csv is the raw data set pre-cleaning
@@ -101,6 +106,25 @@ The model is only fitted for houses in belgium according to the subcategorizatio
 ## Usage 🛠️
 
 
+**Clone the repository using `git` command:**
+
+    git clone git@github.com:andreaharit/05-immoeliza-ml-Andrea.git
+
+**Navigate to the root of the repository using `cd` command**:
+
+    cd 05-immoeliza-ml-Andrea
+
+**Install the required packages using `pip` command:**
+
+    pip3 install -r requirements.txt
+
+**Regenerate if necessary the cleaned_houses.csv dataset**
+
+    python3 cleaning.py
+
+**Run the preprocessing and models via main**
+
+    python3 main.py
 
 
 ## Timeline 📅
