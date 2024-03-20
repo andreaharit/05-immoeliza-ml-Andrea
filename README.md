@@ -138,3 +138,4 @@ This will overwrite the current csv file on the data folder.
 ## Timeline 📅
 
 This project took 5 days to be completed.
+
