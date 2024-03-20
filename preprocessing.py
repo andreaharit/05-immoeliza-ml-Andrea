@@ -46,7 +46,7 @@ class Preprocessing:
         X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42, test_size=0.2)
 
 
-        # Inputting
+        # Inputting, prevent errors for dropped columns that can't be inputted anymore
         try:
             # Replace NAN in kitchen and living room by multiplying living area for a average %
 

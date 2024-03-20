@@ -81,7 +81,8 @@ For each set of columns that was dropped we can see the following metrics:
 
 ![Year construction and state of construction is dropped](img/drop_constr_year_state_const.png)
 
-In conclusion, the random tree regressor was the best scoring model by dropping only the "construction_year" column.
+In conclusion, the random tree regressor was the best scoring model by dropping only the "construction_year" column. With the metrics of:
+
 |   R2 |	RMSE (€) | MAE (€)|
 | ----- | ------- | ---------- |
 | 0.695 | 80150.5 | 59687.4 |

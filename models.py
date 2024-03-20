@@ -3,6 +3,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
+
+from sklearn.model_selection import KFold, cross_val_score
 import pandas as pd
 
 
@@ -11,7 +13,11 @@ import pandas as pd
 class metrics:
     """Child class used in each model for calculating metrics (R2, RMSE, MAE) as its attributes.
     Takes y train, y test, y predicted from train set and y predicted from test set."""
-    def __init__(self, y_train, y_pred_train, y_test, y_pred ) -> None:
+    def __init__(self, y_train, y_pred_train, y_test, y_pred, model, X_train, X_test) -> None:
+
+        # Doing a cross validation separately, didn't have time to concatenate the datasets 
+        self.scores_r2_train = cross_val_score(model, X_train, y_train, scoring='r2', cv=5)
+        self.scores_r2_test = cross_val_score(model, X_test, y_test, scoring='r2', cv=2)     
         
         # R2
         self.r2_train = round(r2_score(y_train, y_pred_train),5)
@@ -25,24 +31,33 @@ class metrics:
         self.mae_train = round(mean_absolute_error(y_train, y_pred_train),2)
         self.mae_test = round(mean_absolute_error(y_test, y_pred),2)
 
+
+
 class Linear_reg (metrics):
     """Linear regression: model training, model predicting and metrics"""
     def __init__(self, X_train, X_test, y_train, y_test, columns) -> None:        
         # Regression
-        regressor = LinearRegression()
-        regressor.fit(X_train,y_train)
+        linear_regression = LinearRegression()
+        linear_regression.fit(X_train,y_train)
 
         # Makes predictions
-        y_pred = regressor.predict(X_test)
-        y_pred_train = regressor.predict(X_train)
+        y_pred = linear_regression.predict(X_test)
+        y_pred_train = linear_regression.predict(X_train)
 
         # Stores coeficients and intercept as attributes
-        self.coef = regressor.coef_
+        self.coef = linear_regression.coef_
         self.columns = columns
-        self.intercept = regressor.intercept_
+        self.intercept = linear_regression.intercept_
+        self.model = linear_regression
 
         # Stores metrics as attributes
-        super().__init__(y_train, y_pred_train, y_test, y_pred)
+        super().__init__(y_train, y_pred_train, y_test, y_pred, linear_regression, X_train, X_test)
+
+    def print_croos_r2 (self, i):
+            print(f"Linear Regression {i}")
+            print(self.scores_r2_train)
+            print(self.scores_r2_test)
+        
 
     def print_coef (self):
         coef_list = pd.DataFrame(zip(self.columns, self.coef))
@@ -64,22 +79,28 @@ class Poly_reg (metrics):
         degree = 2
 
         # Generating polynome and regressing
-        polyreg=Pipeline(steps = [
+        polynomial_regressor=Pipeline(steps = [
             ("pf", PolynomialFeatures(degree)),
             ("lr",LinearRegression())]
         )
-        polyreg.fit(X_train,y_train)
+        polynomial_regressor.fit(X_train,y_train)
 
         # Make predictions
-        y_pred = polyreg.predict(X_test)
-        y_pred_train = polyreg.predict(X_train)
+        y_pred = polynomial_regressor.predict(X_test)
+        y_pred_train = polynomial_regressor.predict(X_train)
 
         # Stores coeficients and intercept as attributes
-        self.coef = polyreg["lr"].coef_
-        self.intercept = polyreg["lr"].intercept_
+        self.coef = polynomial_regressor["lr"].coef_
+        self.intercept = polynomial_regressor["lr"].intercept_
+        self.model = polynomial_regressor
 
          # Stores metrics as attributes
-        super().__init__(y_train, y_pred_train, y_test, y_pred)
+        super().__init__(y_train, y_pred_train, y_test, y_pred, polynomial_regressor, X_train, X_test)
+
+    def print_croos_r2 (self, i):
+        print(f"Polynomial Regression {i}")
+        print(self.scores_r2_train)
+        print(self.scores_r2_test)
 
 
 class Random_forest_reg (metrics):
@@ -91,15 +112,22 @@ class Random_forest_reg (metrics):
         samples = 2
 
         # Regression
-        treeregressor = RandomForestRegressor(n_estimators = trees, min_samples_leaf= samples)
-        treeregressor.fit(X_train,y_train)
+        random_forest_regressor = RandomForestRegressor(n_estimators = trees, min_samples_leaf= samples)
+        random_forest_regressor.fit(X_train,y_train)
 
         # Make predictions
-        y_pred= treeregressor.predict(X_test)
-        y_pred_train= treeregressor.predict(X_train)
+        y_pred= random_forest_regressor.predict(X_test)
+        y_pred_train= random_forest_regressor.predict(X_train)
 
         # Stores metrics as attributes
-        super().__init__(y_train, y_pred_train, y_test, y_pred)
+        super().__init__(y_train, y_pred_train, y_test, y_pred, random_forest_regressor, X_train, X_test)
+
+        self.model = random_forest_regressor
+
+        def print_croos_r2 (self, i):
+            print(f"Random Forest Regression {i}")
+            print(self.scores_r2_train)
+            print(self.scores_r2_test)
 
 
 

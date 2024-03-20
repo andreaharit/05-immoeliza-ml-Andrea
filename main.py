@@ -25,17 +25,17 @@ def main():
         linear = Linear_reg(X_train= prepro.X_train, X_test= prepro.X_test, y_train= prepro.y_train, y_test=prepro.y_test, columns = prepro.columns)
         linear_metrics = ["linear", linear.r2_train, linear.r2_test, linear.rmse_train, linear.rmse_test, linear.mae_train, linear.mae_test]
         out_file_linear = './models_pickle/linear_' + str(i) + '.pkl'
-        joblib.dump(linear, out_file_linear)
+        joblib.dump(linear.model, out_file_linear)
 
         poly = Poly_reg(X_train= prepro.X_train, X_test= prepro.X_test, y_train= prepro.y_train, y_test=prepro.y_test)
         poly_metrics = ["polynomial", poly.r2_train, poly.r2_test, poly.rmse_train, poly.rmse_test, poly.mae_train, poly.mae_test]
         out_file_poly = './models_pickle/polynomial_' + str(i) + '.pkl'
-        joblib.dump(poly, out_file_poly)
+        joblib.dump(poly.model, out_file_poly)
 
         rd_forest = Random_forest_reg(X_train= prepro.X_train, X_test= prepro.X_test, y_train= prepro.y_train, y_test=prepro.y_test)
         forest_metrics = ["random_forest", rd_forest.r2_train, rd_forest.r2_test, rd_forest.rmse_train, rd_forest.rmse_test, rd_forest.mae_train, rd_forest.mae_test]
         out_file_forest = './models_pickle/forest_' + str(i) + '.pkl'
-        joblib.dump(rd_forest, out_file_forest)
+        joblib.dump(rd_forest.model, out_file_forest)
 
         columns = ["model", "r2_train", "r2_test", "rmse_train", "rmse_test", "mae_train", "mae_test"]
         data = [linear_metrics, poly_metrics, forest_metrics]   
