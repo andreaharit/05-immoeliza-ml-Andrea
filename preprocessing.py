@@ -8,97 +8,72 @@ import pandas as pd
 import numpy as np
 
 
-class Preprocessing:
-    """
-    Class handles all the preprocessing regarding the data:
-        -Dropping columns to fine tune a model
-        -Splitting data
-        -One hot encoding
-        -Scaling
-    Args: 
-        file(str): CSV to be read with pre-cleanned data
-        drop(list): list of columns to be dropped for a particular model.
-        cat(list): list of not dropped columns that are categorical and will be encoded
-    Attributes:
-        self.X = pos-dropping, pre-splitting feature columns with data
-        self.y = pre-split target column with data
-        self.X_train = X train set pos-processing
-        self.X_test = X test set pos-processing
-        self.y_test = y_test pos-processing
-        self.y_train = y_train pos-processint
-        self.columns = list with columns names of X_train pos-processing
-    """
-    def __init__(self, file, drop, cat) -> None:
-        # Load clean CSV
-        df = pd.read_csv(file)
 
-        # Dropping columns that hurt the specific model
-        columns_drop = drop
-        categorical = cat
+def input_categorical (X_df, categorical):
+# Inputting, prevent errors for dropped columns that can't be inputted anymore
+    try:  
+        for category in categorical:  
+        # Replace NAN in "state_construction" with the most freq value (probably GOOD)
+            X_df[category] = X_df[category].fillna(X_df[category].value_counts().index[0])
+            return X_df
+    except KeyError as e:
+        pass        
 
-        df.drop(columns = columns_drop, inplace= True)
+def one_hot (X_df, categorical): 
+    # One hot encoding
+    enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False).set_output(transform="pandas")
+    enctransform_train = enc.fit_transform(X_df[categorical])
+    df = pd.concat([X_df, enctransform_train], axis = 1).drop(categorical, axis = 1)
+    return df
 
+def KNN (X_df, k = 71):
+    # KNN imputation, must be done after one-hot encoding otherwise it doesnt recognize strings
+    imputer = KNNImputer(missing_values = np.nan, n_neighbors=k, weights = "distance")
+    X_df = imputer.fit_transform(X_df)
+    return X_df
+
+def scaler (X_df):
+    # Scale the features using StandardScaler
+    scaler = StandardScaler()
+    X_df = scaler.fit_transform(X_df)
+    return X_df
+
+
+class Process_for_model ():
+    def __init__(self, X, y, categorical):
+
+        X_train,X_test,y_train,y_test = train_test_split(X,y,random_state = 42, test_size = 0.2)
+
+        self.categorical = categorical
+
+        # For X_train
+        X_train = input_categorical (X_train, categorical)
+        X_train = one_hot (X_train, categorical)
+        X_train = KNN(X_train, k = 71)
+        self.X_train = scaler(X_train)
+
+        # For X_test
+        X_test = input_categorical(X_test, categorical)
+        X_test = one_hot(X_test, categorical)
+        X_test = KNN (X_test, k = 71)
+        self.X_test = scaler(X_test)
         
-
-        # Split in feature/target and training set/test set
-        X = df.drop(columns=["price"])
-        y = df['price']
-        X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42, test_size=0.2)
-
-
-        # Inputting, prevent errors for dropped columns that can't be inputted anymore
-        try:
-            # Replace NAN in kitchen and living room by multiplying living area for a average %
-
-            percent_k = X_train["kitchen_surface"].sum()/X_train["living_area"].sum() 
-            percent_l = X_train["livingroom_surface"].sum()/X_train["living_area"].sum() 
-            X_train['livingroom_surface'] = X_train['livingroom_surface'].fillna(round(X_train["living_area"]*percent_l,0))
-            X_train['kitchen_surface'] = X_train['kitchen_surface'].fillna(round(X_train["living_area"]*percent_k,0))
-
-            # Replace NAN in "state_construction" with the most freq value (probably GOOD)
-            X_train["state_construction"] = X_train["state_construction"].fillna(X_train['state_construction'].value_counts().index[0])
-            X_test["state_construction"] = X_test["state_construction"].fillna(X_test['state_construction'].value_counts().index[0])
-
-        except KeyError as e:
-            pass
-        
-
-
-
-        # One hot encoding
-        # For training set
-        enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False).set_output(transform="pandas")
-        enctransform_train = enc.fit_transform(X_train[categorical])
-        X_train = pd.concat([X_train, enctransform_train], axis = 1).drop(categorical, axis = 1)
-
-        # For testing set
-        enc2 = OneHotEncoder(handle_unknown='ignore', sparse_output=False).set_output(transform="pandas")
-        enctransform_test = enc2.fit_transform(X_test[categorical])
-        X_test = pd.concat([X_test, enctransform_test], axis = 1).drop(categorical, axis = 1)
-
-        # Colecting colum names for printing later coeficients if necessary
-        columns = X_train.columns
-
-
-
-        # KNN imputation, must be done after one-hot encoding otherwise it doesnt recognize strings
-        k = 71
-        imputer = KNNImputer(missing_values = np.nan, n_neighbors=k, weights = "distance")
-        X_train = imputer.fit_transform(X_train)
-        imputer = KNNImputer(n_neighbors=k)
-        X_test = imputer.fit_transform(X_test)
-
-        # Scale the features using StandardScaler
-        scaler = StandardScaler()
-        X_train = scaler.fit_transform(X_train)
-        X_test = scaler.transform(X_test)
-
-        # Create class attributes
-        self.X = X
-        self.y = y
-        self.X_train = X_train
-        self.X_test = X_test
-        self.y_test = y_test
+        # For y
         self.y_train = y_train
-        self.columns = columns
-        print(f"Data set contains {X.shape[0]} data points and {X.shape[1]} features.")
+        self.y_test = y_test
+
+class Process_all_dataset:
+    def __init__(self, X, y, categorical):
+        self.y = y
+        self.categorical = categorical
+
+        # For X_train
+        X = input_categorical(X, categorical)
+        X = one_hot (X, categorical)
+        X = KNN(X, k = 71)
+        self.X = scaler(X)
+
+
+
+
+

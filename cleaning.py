@@ -78,6 +78,9 @@ def main():
     # Furnished, swimmingpool, fireplace are almost all 0. 
     # Too uneven distribution for categorical data. And have very low correlation with the price.
     df.drop(['furnished','fireplace', 'swimmingpool'], axis=1, inplace=True)
+    # Too many NULLS > 50%
+    df.drop(['construction_year', 'kitchen_surface', 'livingroom_surface'], axis=1, inplace=True)
+
 
     # Drop rows where bathroom or bedroom is zero or NaN
     # They are very little of the df
@@ -111,16 +114,8 @@ def main():
     mask_state = df["state_construction"].isin(["GOOD", "JUST_RENOVATED", "AS_NEW", "TO_RENOVATE", "AS_NEW","TO_RESTORE","TO_BE_DONE_UP"])
     df.loc[~mask_state, 'state_construction'] = np.nan
 
-    # Put NaN where kitchen or livingroom area is bigger than living area
-    df.loc[df["kitchen_surface"] > df["living_area"], "kitchen_surface"] = np.nan
-    df.loc[df["livingroom_surface"] > df["living_area"], "living_area"] = np.nan
 
-    # Drop rows where kitchen or livingroom area is bigger than living area
-    # Unreliable rows
-    mask_kitchen = df["kitchen_surface"] > df["living_area"]
-    mask_living = df["livingroom_surface"] > df["living_area"]
-    df = df[~mask_kitchen]
-    df = df[~mask_living]
+
 
     # Drop rows where living_area is empty, they are very little
     df = df.dropna(subset = ['living_area']) 
@@ -143,7 +138,6 @@ def main():
                     "has_terrace": 'Int64',
                     'has_attic': 'Int64',
                     "has_basement": 'Int64',
-                    "construction_year": 'Int64',
                     "epc":'Int64'
                     }    
     df = df.astype(convert_dict)
@@ -158,16 +152,17 @@ def main():
     print("The percentafe of zeros is:")
     count_zeros(df)
 
+    # save to csv
+    df.to_csv("./data/cleaned_houses.csv", index=False)
+
 
     # Plot coef matrix    
     columns_coef = ['price','living_area', 'bedrooms',
-        'bathrooms', 'livingroom_surface', 'kitchen_surface', 'facades',
-        'has_garden', 'kitchen', 'has_terrace', 'has_attic', 'has_basement',
-        'construction_year','area_total']
+        'bathrooms', 'facades',
+        'has_garden', 'kitchen', 'has_terrace', 'has_attic', 'has_basement','area_total']
     coef_matrix(df, columns_coef )
 
-    # save to csv
-    df.to_csv(".data/cleaned_houses.csv", index=False)
+
 
 
 if __name__ == "__main__":

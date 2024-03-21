@@ -1,56 +1,69 @@
 import pandas as pd
-from preprocessing import Preprocessing
-from models import Linear_reg, Poly_reg, Random_forest_reg
+from preprocessing import Process_for_model, Process_all_dataset
+from models import Random_forest_reg
 import joblib
 
+from sklearn.model_selection import KFold, cross_validate
 
- 
 
 def main():
 
-    group_columns_drop = [["construction_year"], ["construction_year", "state_construction"]]
-    group_categorical = [["district", "state_construction"], ["district"]] 
-
-
+    categorical = ["district", "state_construction"]
     file = "./data/cleaned_houses.csv"
+
+    df = pd.read_csv(file)
+    # Experimental dropping
+    df.drop(["kitchen","has_attic","has_basement"], axis=1, inplace=True)
+    # Shuffle DF because its ordered per price, and this breaks cross validation
+    df = df.sample(frac=1).reset_index(drop=True)
+
+
+    # Split in feature/target and training set/test set
+    X = df.drop(columns=["price"])
+    y = df['price'] 
     
-    for i in range(2):
-        columns_drop = group_columns_drop[i]
-        categorical = group_categorical[i]
+
+    prepro_split = Process_for_model(X = X, y = y, categorical= categorical)
+
+    X_train = prepro_split.X_train 
+    X_test = prepro_split.X_test
+    y_train = prepro_split.y_train
+    y_test = prepro_split.y_test
+
+    prepro_all = Process_all_dataset(X = X, y = y, categorical= categorical)
+    y = prepro_all.y
+    X = prepro_all.X
 
 
-        prepro = Preprocessing(file = file, drop = columns_drop, cat=categorical)
-        y = prepro.y
+    rd_forest = Random_forest_reg(X_train= X_train, X_test= X_test, y_train= y_train, y_test= y_test)
+    forest_metrics = rd_forest.metrics   
 
-        linear = Linear_reg(X_train= prepro.X_train, X_test= prepro.X_test, y_train= prepro.y_train, y_test=prepro.y_test, columns = prepro.columns)
-        linear_metrics = ["linear", linear.r2_train, linear.r2_test, linear.rmse_train, linear.rmse_test, linear.mae_train, linear.mae_test]
-        out_file_linear = './models_pickle/linear_' + str(i) + '.pkl'
-        joblib.dump(linear.model, out_file_linear)
+    columns = ["model", "r2_train", "r2_test", "rmse_train", "rmse_test", "mae_train", "mae_test"]
+    data = forest_metrics
+    
+    
+    print(f"Data mean {round(pd.Series(y).mean(),2)}")
+    print(f"Data variance {"{:0.2e}".format(pd.Series(y).var())}")
+    print(f"Data std {round(pd.Series(y).std(),2)}")
+    
+    df_metrics = pd.DataFrame([data], columns = columns)  
 
-        poly = Poly_reg(X_train= prepro.X_train, X_test= prepro.X_test, y_train= prepro.y_train, y_test=prepro.y_test)
-        poly_metrics = ["polynomial", poly.r2_train, poly.r2_test, poly.rmse_train, poly.rmse_test, poly.mae_train, poly.mae_test]
-        out_file_poly = './models_pickle/polynomial_' + str(i) + '.pkl'
-        joblib.dump(poly.model, out_file_poly)
+    print(df_metrics)
 
-        rd_forest = Random_forest_reg(X_train= prepro.X_train, X_test= prepro.X_test, y_train= prepro.y_train, y_test=prepro.y_test)
-        forest_metrics = ["random_forest", rd_forest.r2_train, rd_forest.r2_test, rd_forest.rmse_train, rd_forest.rmse_test, rd_forest.mae_train, rd_forest.mae_test]
-        out_file_forest = './models_pickle/forest_' + str(i) + '.pkl'
-        joblib.dump(rd_forest.model, out_file_forest)
 
-        columns = ["model", "r2_train", "r2_test", "rmse_train", "rmse_test", "mae_train", "mae_test"]
-        data = [linear_metrics, poly_metrics, forest_metrics]   
-        
-        
-        print(f"Data mean {round(pd.Series(y).mean(),2)}")
-        print(f"Data variance {"{:0.2e}".format(pd.Series(y).var())}")
-        print(f"Data std {round(pd.Series(y).std(),2)}")
-        print(f"Dropped columns: {columns_drop}")
-        
-        df_metrics = pd.DataFrame(data, columns = columns)  
-        print(df_metrics)
+    # Doing a cross validation
+  
+    scores = ('r2', 'neg_root_mean_squared_error', 'neg_mean_absolute_error')
+    cross_validation = cross_validate(rd_forest.model, X, y, scoring= scores, cv=5)
+    print (f"Cross validation, mean R2: {abs(cross_validation["test_r2"].mean())}")
+    print (f"Cross validation, mean RMSE: {abs(cross_validation['test_neg_root_mean_squared_error'].mean())}")
+    print (f"Cross validation, mean MAE: {abs(cross_validation['test_neg_mean_absolute_error'].mean())}")
 
 
 
+
+    out_file_forest = './models_pickle/forest.pkl'
+    joblib.dump(rd_forest.model, out_file_forest)
 
 if __name__ == '__main__':
     main()
