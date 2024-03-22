@@ -34,6 +34,7 @@ class Random_forest_reg (metrics):
         random_forest_regressor = RandomForestRegressor(n_estimators = trees, min_samples_leaf= samples)
         random_forest_regressor.fit(X_train,y_train)
 
+
         # Make predictions
         y_pred= random_forest_regressor.predict(X_test)
         y_pred_train= random_forest_regressor.predict(X_train)

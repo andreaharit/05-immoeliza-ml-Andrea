@@ -6,23 +6,34 @@ from sklearn.impute import SimpleImputer
 
 import pandas as pd
 import numpy as np
+import joblib
 
 
 
 def input_categorical (X_df, categorical):
 # Inputting, prevent errors for dropped columns that can't be inputted anymore
-    try:  
+    try:         
+
         for category in categorical:  
-        # Replace NAN in "state_construction" with the most freq value (probably GOOD)
-            X_df[category] = X_df[category].fillna(X_df[category].value_counts().index[0])
-            return X_df
+            if X_df[category].isnull().sum() == 0:
+                pass
+            else:
+                # Replace NAN in "state_construction" with the most freq value (probably GOOD)    
+                X_df[category] = X_df[category].fillna(X_df[category].value_counts().index[0])
+                
     except KeyError as e:
-        pass        
+        pass
+    return X_df        
 
 def one_hot (X_df, categorical): 
     # One hot encoding
-    enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False).set_output(transform="pandas")
+    enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False).set_output(transform="pandas")    
     enctransform_train = enc.fit_transform(X_df[categorical])
+    # save the encoding
+
+    out_file_enc = './models_pickle/encoding.pkl'
+    joblib.dump(enc, out_file_enc)
+
     df = pd.concat([X_df, enctransform_train], axis = 1).drop(categorical, axis = 1)
     return df
 
@@ -36,6 +47,9 @@ def scaler (X_df):
     # Scale the features using StandardScaler
     scaler = StandardScaler()
     X_df = scaler.fit_transform(X_df)
+
+    out_file_sc = './models_pickle/scaler.pkl'
+    joblib.dump(scaler, out_file_sc)
     return X_df
 
 
@@ -47,8 +61,9 @@ class Process_for_model ():
         self.categorical = categorical
 
         # For X_train
-        X_train = input_categorical (X_train, categorical)
-        X_train = one_hot (X_train, categorical)
+        X_train = input_categorical(X_train, categorical)
+        X_train = one_hot(X_train, categorical)
+        self.columns_onehot = X_train.columns
         X_train = KNN(X_train, k = 71)
         self.X_train = scaler(X_train)
 
@@ -62,9 +77,23 @@ class Process_for_model ():
         self.y_train = y_train
         self.y_test = y_test
 
+        
+
 class Process_all_dataset:
     def __init__(self, X, y, categorical):
         self.y = y
+        self.categorical = categorical
+
+        # For X_train
+        X = input_categorical(X, categorical)
+        X = one_hot (X, categorical)
+        
+        X = KNN(X, k = 71)
+        self.X = scaler(X)
+
+
+class predict:
+    def __init__(self, X, categorical):
         self.categorical = categorical
 
         # For X_train

@@ -97,15 +97,15 @@ def main():
 
 
     # Group EPCS As and give them a numerical weight
-    group_epc = {"A++": 6, 
-                "A+": 6, 
-                "A": 6,
-                "B":5,
-                "C":4,
-                "D":3,
-                "E":2,
-                "F":1,
-                "G": 0
+    group_epc = {"A++": 9 , 
+                "A+": 8, 
+                "A": 7,
+                "B":6,
+                "C":5,
+                "D":4,
+                "E":3,
+                "F":2,
+                "G": 1
                 }
     df = df.replace({"epc": group_epc})
 

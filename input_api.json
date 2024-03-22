@@ -1,0 +1,19 @@
+{"house":
+{
+  "district": "Charleroi",
+  "state_construction": "GOOD",
+  "living_area": 150,
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "facades": 2,
+  "has_garden": 1,
+  "kitchen": 1,
+  "has_terrace": 0,
+  "has_attic": 0,
+  "has_basement": 0,
+  "epc": 6,
+  "area_total": 160
+}
+
+  
+}
